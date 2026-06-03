@@ -13,18 +13,24 @@ import java.util.*;
  *         [2] Lookup by Product Name    — partial, case-insensitive match
  *         [3] Show all products         — full inventory display
  *         [4] Add a new product         — guided prompts; appended to source .txt
- *         [5] Exit
+ *         [5] Remove a product          — prompted by ID; removed from live inventory
+ *                                         and rewritten out of the source .txt file
+ *         [6] Exit
  *
  * File I/O:
- *   - loadFromFile()         : BufferedReader reads CSV lines into InventoryManager
- *   - appendProductToFile()  : BufferedWriter (FileWriter append=true) writes one
- *                              new CSV line to the end of the chosen source file,
- *                              keeping the .txt in sync with the live inventory.
+ *   - loadFromFile()               : BufferedReader reads CSV lines into InventoryManager
+ *   - appendProductToFile()        : BufferedWriter (FileWriter append=true) writes one
+ *                                    new CSV line to the end of the chosen source file
+ *   - rewriteFileWithoutProduct()  : BufferedReader reads all lines into memory, filters
+ *                                    out the removed product's CSV line, then
+ *                                    BufferedWriter (overwrite mode) writes the remaining
+ *                                    lines back, keeping the .txt file in sync.
  *
  * Scanner usage:
- *   - promptFileSelection()  : chooses which .txt file(s) to load (1, 2, or both)
- *   - runInteractiveMenu()   : main interactive loop (lookup + add + exit)
- *   - promptAddProduct()     : field-by-field guided input for a new product
+ *   - promptFileSelection()   : chooses which .txt file(s) to load (1, 2, or both)
+ *   - runInteractiveMenu()    : main interactive loop (lookup + add + remove + exit)
+ *   - promptAddProduct()      : field-by-field guided input for a new product
+ *   - promptRemoveProduct()   : prompts for a Product ID, confirms, then removes
  *
  * Data structures exercised:
  *   - HashMap  (Inventory.productMap)  — O(1) product lookup by ID
@@ -180,10 +186,15 @@ public class Main {
      * @param manager The InventoryManager to load products into
      */
     private static void promptFileSelection(InventoryManager manager) {
+        // Count live data lines in each file so the displayed count reflects
+        // any adds or removes that have modified the .txt files since last run.
+        int count1 = countProductsInFile(FILE_1);
+        int count2 = countProductsInFile(FILE_2);
+
         System.out.println("\nAvailable inventory data files:");
-        System.out.println("  [1] " + FILE_1 + "  (Electronics, Furniture, Stationery — 15 items)");
-        System.out.println("  [2] " + FILE_2 + "  (Apparel, Health, Kitchen           — 15 items)");
-        System.out.println("  [3] Both files");
+        System.out.println("  [1] " + FILE_1 + "  (Electronics, Furniture, Stationery — " + count1 + " items)");
+        System.out.println("  [2] " + FILE_2 + "  (Apparel, Health, Kitchen           — " + count2 + " items)");
+        System.out.println("  [3] Both files (" + (count1 + count2) + " items total)");
 
         int choice = -1;
         while (choice < 1 || choice > 3) {
@@ -219,9 +230,11 @@ public class Main {
      *   [2] Lookup by Product Name    — partial, case-insensitive match
      *   [3] Show all products         — full inventory list
      *   [4] Add a new product         — guided input; persisted to .txt file
-     *   [5] Exit
+     *   [5] Remove a product          — prompted by ID; removed from inventory
+     *                                   and rewritten out of the source .txt file
+     *   [6] Exit
      *
-     * Loops until the user selects 5, "exit", or "quit".
+     * Loops until the user selects 6, "exit", or "quit".
      *
      * @param manager The InventoryManager to query / update
      */
@@ -283,15 +296,20 @@ public class Main {
                     promptAddProduct(manager);
                     break;
 
-                // ---- [5] Exit ----
+                // ---- [5] Remove a product ----
                 case "5":
+                    promptRemoveProduct(manager);
+                    break;
+
+                // ---- [6] Exit ----
+                case "6":
                 case "exit":
                 case "quit":
                     running = false;
                     break;
 
                 default:
-                    System.out.println("  Unrecognized option. Please enter 1–5.");
+                    System.out.println("  Unrecognized option. Please enter 1–6.");
             }
 
             if (running) System.out.println();
@@ -486,6 +504,176 @@ public class Main {
         }
     }
 
+    /**
+     * Guides the user through removing an existing product from the live
+     * inventory and its source .txt file.
+     *
+     * Steps:
+     *   1. Prompt for a Product ID; re-prompt if blank or not found.
+     *   2. Display the matching product so the user can confirm the right item.
+     *   3. Ask for y/n confirmation before committing.
+     *   4. On confirmation:
+     *        a. Determine which file the product belongs to via
+     *           {@link #resolveSourceFile(String)} — scans each loaded .txt
+     *           for a line that starts with the given product ID.
+     *        b. Remove the product from the live InventoryManager.
+     *        c. Call {@link #rewriteFileWithoutProduct(String, String)} to
+     *           filter the matching CSV line out of the source file.
+     *
+     * @param manager The InventoryManager to remove the product from
+     */
+    private static void promptRemoveProduct(InventoryManager manager) {
+        System.out.println("\n  --- Remove Product ---");
+
+        // ---- Product ID ----
+        String productId = "";
+        Product target = null;
+        while (target == null) {
+            System.out.print("  Enter Product ID to remove (e.g. P003): ");
+            productId = scanner.nextLine().trim().toUpperCase();
+            if (productId.isEmpty()) {
+                System.out.println("  Product ID cannot be blank. Please try again.");
+                continue;
+            }
+            target = manager.getProduct(productId);
+            if (target == null) {
+                System.out.println("  '" + productId + "' not found in inventory. Please try again.");
+            }
+        }
+
+        // ---- Show product and confirm ----
+        System.out.println("\n  Product to be removed:");
+        System.out.println("  " + target);
+        System.out.print("\n  Confirm removal? (y/n): ");
+        String confirm = scanner.nextLine().trim().toLowerCase();
+
+        if (!confirm.equals("y") && !confirm.equals("yes")) {
+            System.out.println("  Remove product cancelled.");
+            return;
+        }
+
+        // ---- Locate the source file that contains this product ID ----
+        String sourceFile = resolveSourceFile(productId);
+
+        // ---- Remove from live inventory ----
+        boolean removed = manager.removeProduct(productId);
+        if (!removed) {
+            System.out.println("  ERROR: Could not remove product from inventory.");
+            return;
+        }
+
+        // ---- Rewrite the source file without that product's line ----
+        if (sourceFile != null) {
+            rewriteFileWithoutProduct(productId, sourceFile);
+        } else {
+            System.out.println("  Note: product removed from live inventory, but its source "
+                    + "file could not be determined — .txt file was NOT modified.");
+        }
+    }
+
+    /**
+     * Scans each loaded .txt file to find which one contains a CSV line
+     * that starts with the given product ID. Returns the filename of the
+     * first file where a match is found, or {@code null} if no match exists
+     * (e.g. the product was added only in memory during this session without
+     * being persisted, which should not happen through normal program flow).
+     *
+     * Only files that were actually loaded at startup are searched, based
+     * on the value of {@code loadedFileChoice}.
+     *
+     * @param productId The product ID to search for (e.g. "P003")
+     * @return The filename containing the product line, or null if not found
+     */
+    private static String resolveSourceFile(String productId) {
+        List<String> filesToSearch = new ArrayList<>();
+        if (loadedFileChoice == 1 || loadedFileChoice == 3) filesToSearch.add(FILE_1);
+        if (loadedFileChoice == 2 || loadedFileChoice == 3) filesToSearch.add(FILE_2);
+
+        // The CSV prefix we are looking for: "P003," (ID + comma)
+        String prefix = productId + ",";
+
+        for (String filename : filesToSearch) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    if (line.trim().startsWith(prefix)) {
+                        return filename;   // found in this file
+                    }
+                }
+            } catch (IOException e) {
+                System.out.println("  WARNING: Could not read '" + filename
+                        + "' while searching for product: " + e.getMessage());
+            }
+        }
+        return null; // not found in any loaded file
+    }
+
+    /**
+     * Rewrites a .txt file in place, omitting any CSV line whose first field
+     * matches the given product ID. All comment lines, blank lines, and every
+     * other data line are preserved exactly as they appear in the original file.
+     *
+     * Strategy (read-then-overwrite):
+     *   1. Open the file with a BufferedReader and read every line into a List.
+     *   2. Close the reader (releasing the file handle).
+     *   3. Open the same file with a BufferedWriter in overwrite mode
+     *      (FileWriter(filename, false)) and write back every line except
+     *      the one that starts with {@code productId + ","}.
+     *
+     * This approach is safe for the small file sizes used here. For very large
+     * files a temp-file swap pattern would be preferable.
+     *
+     * @param productId The ID of the product whose CSV line should be omitted
+     * @param filename  Path to the .txt file to rewrite
+     */
+    private static void rewriteFileWithoutProduct(String productId, String filename) {
+        String prefix       = productId + ",";
+        List<String> lines  = new ArrayList<>();
+        int removedCount    = 0;
+
+        // ---- Step 1: Read all lines into memory ----
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                lines.add(line);
+            }
+        } catch (IOException e) {
+            System.out.println("  ERROR: Could not read '" + filename + "' for rewrite — "
+                    + e.getMessage());
+            System.out.println("  Product removed from live inventory but .txt was NOT modified.");
+            return;
+        }
+
+        // ---- Step 2: Write lines back, skipping the removed product's line ----
+        // FileWriter(filename, false) opens in overwrite (truncate) mode.
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter(filename, false))) {
+            for (String line : lines) {
+                // Skip the data line that belongs to the removed product.
+                // Trim before checking so leading whitespace does not cause a miss.
+                if (line.trim().startsWith(prefix)) {
+                    removedCount++;
+                    continue;  // omit this line from the rewritten file
+                }
+                writer.write(line);
+                writer.newLine();
+            }
+        } catch (IOException e) {
+            System.out.println("  ERROR: Could not write back to '" + filename + "' — "
+                    + e.getMessage());
+            System.out.println("  Product removed from live inventory but .txt may be incomplete.");
+            return;
+        }
+
+        if (removedCount > 0) {
+            System.out.println("  Removed " + removedCount + " line(s) from " + filename + ".");
+            System.out.println("  Product successfully removed from inventory and file.");
+        } else {
+            // Line was not found — file unchanged; warn the user.
+            System.out.println("  WARNING: No matching line found in " + filename
+                    + " for ID '" + productId + "'. File was not modified.");
+        }
+    }
+
     // ==================================================================
     //  HELPER / UTILITY METHODS
     // ==================================================================
@@ -540,6 +728,37 @@ public class Main {
         } else {
             System.out.println("  (Skipping removal of " + productId + " — not in loaded file)");
         }
+    }
+
+    /**
+     * Counts the number of valid product data lines in a .txt file without
+     * loading any products into the InventoryManager. Used by
+     * {@link #promptFileSelection} to display a live, accurate item count
+     * for each file — reflecting any adds or removes from prior sessions.
+     *
+     * A line is counted only if it is non-blank, does not start with '#',
+     * and contains exactly 5 comma-separated fields (the same criteria used
+     * by loadFromFile). Comment lines, blank lines, and malformed lines are
+     * not counted. Returns 0 if the file cannot be read.
+     *
+     * @param filename Path to the .txt file to inspect
+     * @return Number of valid product lines found in the file
+     */
+    private static int countProductsInFile(String filename) {
+        int count = 0;
+        try (BufferedReader reader = new BufferedReader(new FileReader(filename))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                line = line.trim();
+                if (line.isEmpty() || line.startsWith("#")) continue;
+                if (line.split(",", 5).length == 5) count++;
+            }
+        } catch (IOException e) {
+            // File unreadable — return 0 so the menu still displays cleanly.
+            System.out.println("  WARNING: Could not read '" + filename
+                    + "' for item count: " + e.getMessage());
+        }
+        return count;
     }
 
     /**
@@ -618,7 +837,8 @@ public class Main {
         System.out.println("  [2] Lookup by Product Name (partial match)");
         System.out.println("  [3] Show all products");
         System.out.println("  [4] Add a new product");
-        System.out.println("  [5] Exit");
+        System.out.println("  [5] Remove a product");
+        System.out.println("  [6] Exit");
         System.out.println("---------------------------------------------");
     }
 
