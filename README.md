@@ -1,11 +1,11 @@
 # CS143---Program-6-Coding-with-Gen-AI
 Use ClaudeAI (or alternative Gen-AI tool) to write a Java program that uses OOP design and one of the new data structures you learned this quarter in its solution. 
 
------Claude Generated Readme Below------
+-----Claude Generated Readme Below lol------
 
 # Store Inventory Tracker
 
-A Java-based store inventory management system built with an **Object-Oriented Programming (OOP)** approach. Demonstrates the practical use of core data structures — `HashMap`, `HashSet`, `Stack`, and `Queue` — to manage products, track changes, and process restock orders.
+Problem to solve: A Java-based store inventory management system built with an **Object-Oriented Programming (OOP)** approach. Demonstrates the practical use of core data structures — `HashMap`, `HashSet`, `Stack`, and `Queue` — to manage products, track changes, and process restock orders.
 
 ---
 
