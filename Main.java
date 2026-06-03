@@ -853,3 +853,261 @@ public class Main {
         System.out.println("=".repeat(55));
     }
 }
+
+
+/*
+# PROGRAM OUTPUT
+
+ ----jGRASP exec: java Main
+ 
+ =======================================================
+   1. SELECT INVENTORY DATA FILE(S) TO LOAD
+ =======================================================
+ 
+ Available inventory data files:
+   [1] inventory_data_1.txt  (Electronics, Furniture, Stationery — 15 items)
+   [2] inventory_data_2.txt  (Apparel, Health, Kitchen           — 15 items)
+   [3] Both files (30 items total)
+ 
+ Enter your choice (1, 2, or 3): 1
+ 
+ -- Loading inventory_data_1.txt --
+ Added: [P001] Laptop Pro 15 | Category: Electronics | Price: $1299.99 | Qty: 20
+ Logged transaction: [ADD] Product: P001 | Added product: Laptop Pro 15 (prev qty: 0)
+ Added: [P002] Wireless Mouse | Category: Electronics | Price: $29.99 | Qty: 75
+ Logged transaction: [ADD] Product: P002 | Added product: Wireless Mouse (prev qty: 0)
+ Added: [P003] Mechanical Keyboard | Category: Electronics | Price: $89.99 | Qty: 50
+ Logged transaction: [ADD] Product: P003 | Added product: Mechanical Keyboard (prev qty: 0)
+ Added: [P004] USB-C Hub | Category: Electronics | Price: $49.99 | Qty: 60
+ Logged transaction: [ADD] Product: P004 | Added product: USB-C Hub (prev qty: 0)
+ Added: [P005] 27-inch Monitor | Category: Electronics | Price: $399.99 | Qty: 12
+ Logged transaction: [ADD] Product: P005 | Added product: 27-inch Monitor (prev qty: 0)
+ Added: [P006] Office Chair | Category: Furniture | Price: $249.99 | Qty: 10
+ Logged transaction: [ADD] Product: P006 | Added product: Office Chair (prev qty: 0)
+ Added: [P007] Standing Desk | Category: Furniture | Price: $549.99 | Qty: 6
+ Logged transaction: [ADD] Product: P007 | Added product: Standing Desk (prev qty: 0)
+ Added: [P008] Bookshelf (5-Tier) | Category: Furniture | Price: $129.99 | Qty: 14
+ Logged transaction: [ADD] Product: P008 | Added product: Bookshelf (5-Tier) (prev qty: 0)
+ Added: [P009] Desk Lamp | Category: Furniture | Price: $39.99 | Qty: 30
+ Logged transaction: [ADD] Product: P009 | Added product: Desk Lamp (prev qty: 0)
+ Added: [P010] Filing Cabinet | Category: Furniture | Price: $189.99 | Qty: 8
+ Logged transaction: [ADD] Product: P010 | Added product: Filing Cabinet (prev qty: 0)
+ Added: [P011] Ballpoint Pens (12-Pack) | Category: Stationery | Price: $6.99 | Qty: 150
+ Logged transaction: [ADD] Product: P011 | Added product: Ballpoint Pens (12-Pack) (prev qty: 0)
+ Added: [P012] Sticky Notes (200-Pack) | Category: Stationery | Price: $4.49 | Qty: 200
+ Logged transaction: [ADD] Product: P012 | Added product: Sticky Notes (200-Pack) (prev qty: 0)
+ Added: [P013] Spiral Notebook | Category: Stationery | Price: $3.99 | Qty: 180
+ Logged transaction: [ADD] Product: P013 | Added product: Spiral Notebook (prev qty: 0)
+ Added: [P014] Whiteboard Markers (Set) | Category: Stationery | Price: $8.99 | Qty: 90
+ Logged transaction: [ADD] Product: P014 | Added product: Whiteboard Markers (Set) (prev qty: 0)
+ Added: [P015] Stapler | Category: Stationery | Price: $12.99 | Qty: 45
+ Logged transaction: [ADD] Product: P015 | Added product: Stapler (prev qty: 0)
+   File load complete — 15 loaded, 0 skipped.
+ 
+ =======================================================
+   2. FULL INVENTORY DISPLAY
+ =======================================================
+ 
+ ===== Current Inventory =====
+ [P005] 27-inch Monitor | Category: Electronics | Price: $399.99 | Qty: 12
+ [P004] USB-C Hub | Category: Electronics | Price: $49.99 | Qty: 60
+ [P015] Stapler | Category: Stationery | Price: $12.99 | Qty: 45
+ [P007] Standing Desk | Category: Furniture | Price: $549.99 | Qty: 6
+ [P006] Office Chair | Category: Furniture | Price: $249.99 | Qty: 10
+ [P001] Laptop Pro 15 | Category: Electronics | Price: $1299.99 | Qty: 20
+ [P012] Sticky Notes (200-Pack) | Category: Stationery | Price: $4.49 | Qty: 200
+ [P011] Ballpoint Pens (12-Pack) | Category: Stationery | Price: $6.99 | Qty: 150
+ [P003] Mechanical Keyboard | Category: Electronics | Price: $89.99 | Qty: 50
+ [P014] Whiteboard Markers (Set) | Category: Stationery | Price: $8.99 | Qty: 90
+ [P002] Wireless Mouse | Category: Electronics | Price: $29.99 | Qty: 75
+ [P013] Spiral Notebook | Category: Stationery | Price: $3.99 | Qty: 180
+ [P009] Desk Lamp | Category: Furniture | Price: $39.99 | Qty: 30
+ [P008] Bookshelf (5-Tier) | Category: Furniture | Price: $129.99 | Qty: 14
+ [P010] Filing Cabinet | Category: Furniture | Price: $189.99 | Qty: 8
+ =============================
+ Total products loaded: 15
+ 
+ =======================================================
+   3. UNIQUE CATEGORIES (HashSet)
+ =======================================================
+ Categories found: [Electronics, Furniture, Stationery]
+ Total unique categories: 3
+ 
+ =======================================================
+   4. QUANTITY UPDATES (Automated Demo)
+ =======================================================
+ 
+ 27-inch Monitor   → triggers restock
+ Updated quantity for P005 -> 3
+ Logged transaction: [UPDATE_QTY] Product: P005 | Qty changed from 12 to 3 (prev qty: 12)
+   ⚠ Low stock detected for P005. Queuing restock order.
+ Queued restock order: RestockOrder -> Product: P005 | Qty: 50
+   (Skipping P025 — not in loaded file)
+   (Skipping P028 — not in loaded file)
+ 
+ Laptop Pro 15     → normal update
+ Updated quantity for P001 -> 18
+ Logged transaction: [UPDATE_QTY] Product: P001 | Qty changed from 20 to 18 (prev qty: 20)
+ 
+ =======================================================
+   5. LOW-STOCK REPORT (threshold <= 5)
+ =======================================================
+ Items needing attention:
+ [P005] 27-inch Monitor | Category: Electronics | Price: $399.99 | Qty: 3
+ 
+ =======================================================
+   6. RESTOCK QUEUE (FIFO)
+ =======================================================
+ Pending restock orders: 1
+ 
+ ===== Pending Restock Orders (oldest first) =====
+ RestockOrder -> Product: P005 | Qty: 50
+ =================================================
+ 
+ Processing all pending restock orders:
+ Processing restock order: RestockOrder -> Product: P005 | Qty: 50
+ Updated quantity for P005 -> 53
+ Logged transaction: [RESTOCK] Product: P005 | Restocked +50 units (prev qty: 53)
+ Restocked P005 to qty: 53
+ No pending restock orders.
+ 
+ =======================================================
+   7. TRANSACTION HISTORY (Stack — most recent first)
+ =======================================================
+ 
+ ===== Transaction History (most recent first) =====
+ [RESTOCK] Product: P005 | Restocked +50 units (prev qty: 53)
+ [UPDATE_QTY] Product: P001 | Qty changed from 20 to 18 (prev qty: 20)
+ [UPDATE_QTY] Product: P005 | Qty changed from 12 to 3 (prev qty: 12)
+ [ADD] Product: P015 | Added product: Stapler (prev qty: 0)
+ [ADD] Product: P014 | Added product: Whiteboard Markers (Set) (prev qty: 0)
+ [ADD] Product: P013 | Added product: Spiral Notebook (prev qty: 0)
+ [ADD] Product: P012 | Added product: Sticky Notes (200-Pack) (prev qty: 0)
+ [ADD] Product: P011 | Added product: Ballpoint Pens (12-Pack) (prev qty: 0)
+ [ADD] Product: P010 | Added product: Filing Cabinet (prev qty: 0)
+ [ADD] Product: P009 | Added product: Desk Lamp (prev qty: 0)
+ [ADD] Product: P008 | Added product: Bookshelf (5-Tier) (prev qty: 0)
+ [ADD] Product: P007 | Added product: Standing Desk (prev qty: 0)
+ [ADD] Product: P006 | Added product: Office Chair (prev qty: 0)
+ [ADD] Product: P005 | Added product: 27-inch Monitor (prev qty: 0)
+ [ADD] Product: P004 | Added product: USB-C Hub (prev qty: 0)
+ [ADD] Product: P003 | Added product: Mechanical Keyboard (prev qty: 0)
+ [ADD] Product: P002 | Added product: Wireless Mouse (prev qty: 0)
+ [ADD] Product: P001 | Added product: Laptop Pro 15 (prev qty: 0)
+ ===================================================
+ 
+ =======================================================
+   8. UNDO LAST ACTION
+ =======================================================
+ (P028 not in loaded inventory — skipping undo demo)
+ Undoing transaction: [RESTOCK] Product: P005 | Restocked +50 units (prev qty: 53)
+ 
+ =======================================================
+   9. REMOVE PRODUCTS (Automated Demo)
+ =======================================================
+ Removed: [P011] Ballpoint Pens (12-Pack) | Category: Stationery | Price: $6.99 | Qty: 150
+ Logged transaction: [REMOVE] Product: P011 | Removed product: Ballpoint Pens (12-Pack) (prev qty: 150)
+   (Skipping removal of P030 — not in loaded file)
+ 
+ Categories after removals: [Electronics, Stationery, Furniture]
+ 
+ =======================================================
+   10. FINAL INVENTORY STATE
+ =======================================================
+ 
+ ===== Current Inventory =====
+ [P005] 27-inch Monitor | Category: Electronics | Price: $399.99 | Qty: 53
+ [P004] USB-C Hub | Category: Electronics | Price: $49.99 | Qty: 60
+ [P015] Stapler | Category: Stationery | Price: $12.99 | Qty: 45
+ [P007] Standing Desk | Category: Furniture | Price: $549.99 | Qty: 6
+ [P006] Office Chair | Category: Furniture | Price: $249.99 | Qty: 10
+ [P001] Laptop Pro 15 | Category: Electronics | Price: $1299.99 | Qty: 18
+ [P012] Sticky Notes (200-Pack) | Category: Stationery | Price: $4.49 | Qty: 200
+ [P003] Mechanical Keyboard | Category: Electronics | Price: $89.99 | Qty: 50
+ [P014] Whiteboard Markers (Set) | Category: Stationery | Price: $8.99 | Qty: 90
+ [P002] Wireless Mouse | Category: Electronics | Price: $29.99 | Qty: 75
+ [P013] Spiral Notebook | Category: Stationery | Price: $3.99 | Qty: 180
+ [P009] Desk Lamp | Category: Furniture | Price: $39.99 | Qty: 30
+ [P008] Bookshelf (5-Tier) | Category: Furniture | Price: $129.99 | Qty: 14
+ [P010] Filing Cabinet | Category: Furniture | Price: $189.99 | Qty: 8
+ =============================
+ Total products remaining: 14
+ 
+ =======================================================
+   11. INTERACTIVE MENU
+ =======================================================
+ 
+ Interactive menu ready. Use the options below.
+ 
+ ---------------------------------------------
+   [1] Lookup by Product ID   (exact, e.g. P003)
+   [2] Lookup by Product Name (partial match)
+   [3] Show all products
+   [4] Add a new product
+   [5] Remove a product
+   [6] Exit
+ ---------------------------------------------
+ Your choice: 4
+ 
+   --- Add New Product ---
+   Product ID (e.g. P031): P034
+   Product name: Standing Desk
+   Category: Furniture
+   Price (e.g. 19.99): 69.99
+   Quantity (whole number): 6
+ 
+   New product to be added:
+   [P034] Standing Desk | Category: Furniture | Price: $69.99 | Qty: 6
+ 
+   Confirm? (y/n): y
+   Appending to: inventory_data_1.txt
+ Added: [P034] Standing Desk | Category: Furniture | Price: $69.99 | Qty: 6
+ Logged transaction: [ADD] Product: P034 | Added product: Standing Desk (prev qty: 0)
+   Saved to inventory_data_1.txt: P034,Standing Desk,Furniture,69.99,6
+   Product successfully added to inventory and file.
+ 
+ ---------------------------------------------
+   [1] Lookup by Product ID   (exact, e.g. P003)
+   [2] Lookup by Product Name (partial match)
+   [3] Show all products
+   [4] Add a new product
+   [5] Remove a product
+   [6] Exit
+ ---------------------------------------------
+ Your choice: 3
+ 
+ ===== Current Inventory =====
+ [P005] 27-inch Monitor | Category: Electronics | Price: $399.99 | Qty: 53
+ [P004] USB-C Hub | Category: Electronics | Price: $49.99 | Qty: 60
+ [P015] Stapler | Category: Stationery | Price: $12.99 | Qty: 45
+ [P007] Standing Desk | Category: Furniture | Price: $549.99 | Qty: 6
+ [P006] Office Chair | Category: Furniture | Price: $249.99 | Qty: 10
+ [P001] Laptop Pro 15 | Category: Electronics | Price: $1299.99 | Qty: 18
+ [P012] Sticky Notes (200-Pack) | Category: Stationery | Price: $4.49 | Qty: 200
+ [P034] Standing Desk | Category: Furniture | Price: $69.99 | Qty: 6
+ [P003] Mechanical Keyboard | Category: Electronics | Price: $89.99 | Qty: 50
+ [P014] Whiteboard Markers (Set) | Category: Stationery | Price: $8.99 | Qty: 90
+ [P002] Wireless Mouse | Category: Electronics | Price: $29.99 | Qty: 75
+ [P013] Spiral Notebook | Category: Stationery | Price: $3.99 | Qty: 180
+ [P009] Desk Lamp | Category: Furniture | Price: $39.99 | Qty: 30
+ [P008] Bookshelf (5-Tier) | Category: Furniture | Price: $129.99 | Qty: 14
+ [P010] Filing Cabinet | Category: Furniture | Price: $189.99 | Qty: 8
+ =============================
+ Total products: 15
+ 
+ ---------------------------------------------
+   [1] Lookup by Product ID   (exact, e.g. P003)
+   [2] Lookup by Product Name (partial match)
+   [3] Show all products
+   [4] Add a new product
+   [5] Remove a product
+   [6] Exit
+ ---------------------------------------------
+ Your choice: 6
+ 
+ Program exited. Goodbye!
+ 
+  ----jGRASP: Operation complete.
+ 
+
+*/
