@@ -176,3 +176,11 @@ RestockOrder -> Product: P004 | Qty: 50
 ## License
 
 This project is open source and available under the [MIT License](LICENSE).
+
+
+## Reflection
+
+One of the most significant things to take away from this is that doing the initial stages of complex coding projects and program with the assistance of AI is a huge time saver for the coder. Time management is important in all career fields and in every aspect of life and that is one of AI’s biggest gifts to us. It additionally can act as a force multiplier to generate more output at a quicker pace. Also seen with my approach, Claude was able to generate more than one Java file at the same time (another time saving example but also the best example of being a force multiplier). Here we initially just formatted the beginnings of a coding project but if we continued further AI would also aid us in debugging and optimizing the final product. 
+
+One of the drawbacks in this specific example is that in all honestly, right now I haven’t gone over the code in detail, so I don’t really know exactly how the code currently is doing what it is doing. The main concepts are understood but not the specific steps and individual details of the methods being implemented. In a real-world setting, that is not going to be useful behavior for a coder to continue to operate with. 
+
