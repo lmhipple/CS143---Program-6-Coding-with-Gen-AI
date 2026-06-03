@@ -1,0 +1,19 @@
+# Store Inventory - Data File 2
+# Format: productId,name,category,price,quantity
+# Lines beginning with '#' are comments and should be skipped
+
+P016,Running Shoes,Apparel,84.99,35
+P017,Yoga Mat,Apparel,27.99,50
+P018,Winter Jacket,Apparel,129.99,20
+P019,Baseball Cap,Apparel,19.99,80
+P020,Compression Socks (3-Pack),Apparel,14.99,60
+P021,Protein Powder (2lb),Health,39.99,25
+P022,Vitamin C Tablets (90ct),Health,12.99,100
+P023,Foam Roller,Health,24.99,40
+P024,Digital Thermometer,Health,18.99,55
+P025,First Aid Kit,Health,29.99,3
+P026,Ceramic Coffee Mug,Kitchen,14.99,70
+P027,Reusable Water Bottle,Kitchen,22.99,90
+P028,French Press (32oz),Kitchen,34.99,4
+P029,Bamboo Cutting Board,Kitchen,27.99,38
+P030,Dish Drying Rack,Kitchen,19.99,45

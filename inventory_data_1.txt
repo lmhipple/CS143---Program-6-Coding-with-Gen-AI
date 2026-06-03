@@ -1,0 +1,19 @@
+# Store Inventory - Data File 1
+# Format: productId,name,category,price,quantity
+# Lines beginning with '#' are comments and should be skipped
+
+P001,Laptop Pro 15,Electronics,1299.99,20
+P002,Wireless Mouse,Electronics,29.99,75
+P003,Mechanical Keyboard,Electronics,89.99,50
+P004,USB-C Hub,Electronics,49.99,60
+P005,27-inch Monitor,Electronics,399.99,12
+P006,Office Chair,Furniture,249.99,10
+P007,Standing Desk,Furniture,549.99,6
+P008,Bookshelf (5-Tier),Furniture,129.99,14
+P009,Desk Lamp,Furniture,39.99,30
+P010,Filing Cabinet,Furniture,189.99,8
+P011,Ballpoint Pens (12-Pack),Stationery,6.99,150
+P012,Sticky Notes (200-Pack),Stationery,4.49,200
+P013,Spiral Notebook,Stationery,3.99,180
+P014,Whiteboard Markers (Set),Stationery,8.99,90
+P015,Stapler,Stationery,12.99,45
