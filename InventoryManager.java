@@ -1,5 +1,4 @@
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 /**
  * InventoryManager serves as the central controller for the store inventory system.
