@@ -144,6 +144,16 @@ public class InventoryManager {
     }
 
     /**
+     * Returns a list of every product currently in the inventory.
+     * Used by name-search routines that need to iterate all products.
+     *
+     * @return List of all Product objects
+     */
+    public List<Product> getAllProducts() {
+        return inventory.getAllProducts();
+    }
+
+    /**
      * Returns all products belonging to a specific category.
      *
      * @param category The category to filter by
